@@ -5,77 +5,9 @@ let grades = null;
 let announcements = [];
 let options = {};
 let timeCheck = null;
-//let assignmentData = null;
 
 /* 
 Start
-*/
-
-/*
-// only works if a course has no quizzes...
-function getClassAverages() {
-    if (true) { // check if option is enabled
-        let match = current_page.match(/courses\/(?<id>\d*)\/grades/);
-        if (match) {
-            let course_grades = getData(`${domain}/api/v1/courses/${match.groups.id}/assignments?include[]=score_statistics&include[]=submission`);
-            let course_quizzes = getData(`${domain}/api/v1/courses/${match.groups.id}/quizzes`);
-            let course_groups = getData(`${domain}/api/v1/courses/${match.groups.id}/assignment_groups`);
-            course_grades.then(grades => {
-                course_groups.then(groups => {
-                    course_quizzes.then(quizzes => {
-                        let total_weight = 0;
-                        let total_points = 0;
-                        let weights = {};
-                        groups.forEach(group => {
-                            weights[group.id] = group.group_weight;
-                            total_weight += group.group_weight;
-                        });
-                        groups.forEach(group => {
-                            weights[group.id] = total_weight === 0 ? 1 : weights[group.id] / total_weight;
-                        });
-                        let min = 0, lowq = 0, mean = 0, median = 0, upq = 0, max = 0, earned = 0;
-                        grades.forEach(grade => {
-                            if (!grade.score_statistics) return;
-                            console.log("\nthis:", grade.name, grade.score_statistics.lower_q, grade.score_statistics.mean, grade.score_statistics.upper_q);
-                            console.log("totals:", lowq, upq, total_points);
-                            min += grade.score_statistics.min * weights[grade.assignment_group_id];
-                            lowq += grade.score_statistics.lower_q * weights[grade.assignment_group_id];
-                            mean += grade.score_statistics.mean * weights[grade.assignment_group_id];
-                            median += grade.score_statistics.median * weights[grade.assignment_group_id];
-                            upq += grade.score_statistics.upper_q * weights[grade.assignment_group_id];
-                            max += grade.score_statistics.max * weights[grade.assignment_group_id];
-                            total_points += grade.points_possible * weights[grade.assignment_group_id];
-                            earned += grade.submission.score * weights[grade.assignment_group_id];
-                        });
-
-                        course_quizzes.forEach(quiz => {
-                            // is it even possible to get quiz statistics?
-                        });
-                        // absolute minimum is if the same student got the lowest score on every assignment
-                        // absolute maximum is if the same student got the highest score on every assignment
-                        // it doesn't really tell you much because both are unlikely
-                        console.log("\nabsolute minimum:", min / total_points, "\nabsolute maximum:", max / total_points, "\nlower quartile:", lowq / total_points, "\nmean:", mean / total_points, "\nupper quartile:", upq / total_points);
-
-                        min = (min / total_points);
-                        lowq = (lowq / total_points);
-                        mean = (mean / total_points);
-                        upq = (upq / total_points);
-                        max = (max / total_points);
-                        earned = (earned / total_points);
-
-                        console.log(weights);
-
-                        const width = 150;
-                        let inner = `<td colspan="6" style="padding-bottom: 20px;"><table id="" class=""><thead><tr><th colspan="5">Class Averages</th><th></th></tr></thead><tbody><tr><td>Mean: ${(mean * 100).toFixed(2)}</td><td>Upper Quartile: ${(upq * 100).toFixed(2)}</td><td>Lower Quartile: ${(lowq * 100).toFixed(2)}</td><td colspan="3"><svg viewBox="-1 0 160 30" xmlns="http://www.w3.org/2000/svg" style="float: right; height: 30px; margin-20px; width: 161px; position: relative; margin-right: 30px;" aria-hidden="true"><line class="zero" x1="0" y1="3" x2="0" y2="27" stroke="#556572"></line><line class="possible" x1="150.0" y1="3" x2="150.0" y2="27" stroke="#556572"></line><line class="min" x1="${min * width}" y1="6" x2="${min * width}" y2="24" stroke="#556572" stroke-width="2"></line><line class="bottomQ" x1="${min * width}" y1="15" x2="${lowq * width}" y2="15" stroke="#556572" stroke-width="2"></line><line class="topQ" x1="${upq * width}" y1="15" x2="${max * width}" y2="15" stroke="#556572" stroke-width="2"></line><line class="max" x1="${max * width}" y1="6" x2="${max * width}" y2="24" stroke="#556572" stroke-width="2"></line><rect class="mid50" x="${lowq * width}" y="3" width="22.499999999999986" height="24" stroke="#556572" stroke-width="2" rx="3" fill="none"></rect><line class="median" x1="${mean * width}" y1="3" x2="${mean * width}" y2="27" stroke="#556572" stroke-width="2"></line><rect class="myScore" x="${(earned * width) - 7}" y="8" width="14" height="14" stroke="#224488" stroke-width="2" rx="3" fill="#aabbdd"></rect></svg></td></tr></tbody></table></td>`;
-
-                        makeElement("tr", document.querySelector("#grades_summary tbody"), { "innerHTML": inner });
-                    });
-                });
-            });
-
-        }
-    }
-}
 */
 
 /*
@@ -225,7 +157,6 @@ function startExtension() {
         applyAestheticChanges();
         changeFavicon();
         updateReminders();
-        //getClassAverages();
         setTimeout(() => runDarkModeFixer(false), 800);
         setTimeout(() => runDarkModeFixer(false), 4500);
     });
@@ -320,9 +251,6 @@ function applyOptionsChanges(changes) {
             case ("custom_styles"):
                 applyAestheticChanges();
                 break;
-            case ("show_updates"):
-                showUpdateMsg();
-                break;
             case ("remind"):
                 showExampleReminder();
                 break;
@@ -357,7 +285,6 @@ function checkDashboardReady() {
                     insertGrades();
                     loadDashboardNotes();
                     setupGPACalc();
-                    showUpdateMsg();
                 } else if (mutation.target == document.querySelector('#right-side')) {
                     if (!mutation.target.querySelector(".cleancanvas-todosidebar")) {
                         setupBetterTodo();
@@ -414,11 +341,6 @@ function inspectDarkMode(withOutput = false) {
             const r = parseInt(bgcolor.groups["r"]);
             const g = parseInt(bgcolor.groups["g"]);
             const b = parseInt(bgcolor.groups["b"]);
-            /*
-            if (el.classList.contains("no-touch")) {
-                console.log({ "r": r, "g": g, "b": b }, { "r": r === bg0.r, "g": g === bg0.g, "b": b === bg0.b });
-            }
-            */
             if (r > 245 && g > 245 && b > 245 && !(r === bg0.r && g === bg0.g && b === bg0.b) && !(r === lnk.r && g === lnk.g && b === lnk.b)) {
                 el.style.cssText = (";background:" + options.dark_preset["background-0"] + "!important;color" + options.dark_preset["text-0"] + "!important;") + el.style.cssText;
                 if (withOutput === true) output += selector + "{background: background-0, color: text-0}\n";
@@ -695,7 +617,6 @@ function createTodoCreateBtn(location) {
 
 function createTodoHeader(location) {
     let todoHeader = makeElement("h2", location, { "className": "todo-list-header", "style": "display: flex; align-items:center; justify-content:space-between;" });
-    //todoHeader.style = "display: flex; align-items:center; justify-content:space-between;";
     if (!options.custom_cards || Object.keys(options.custom_cards).length === 0) return;
     let addFillout = makeElement("div", location, { "className": "cleancanvas-add-assignment" });
     let now = new Date();
@@ -738,18 +659,8 @@ function createTodoSections(location) {
     let todoHeader = createTodoHeader(location);
 
     let todoAssignments = makeElement("ul", location, { "id": "cleancanvas-todo-list" });
-    /*
-    let todoAssignments = document.createElement("ul");
-    todoAssignments.id = "cleancanvas-todo-list";
-    location.appendChild(todoAssignments);
-    */
     let announcementHeader = makeElement("h2", location, { "className": "todo-list-header", "textContent": "Announcements" });
     let todoAnnouncements = makeElement("ul", location, { "id": "cleancanvas-announcement-list" });
-    /*
-    let todoAnnouncements = document.createElement("ul");
-    todoAnnouncements.id = "cleancanvas-announcement-list";
-    location.appendChild(todoAnnouncements);
-    */
     let loader = '<div class="cleancanvas-todo-item-loader"><div style="width: 100px" class="cleancanvas-skeleton-text"></div><div style="width: 200px" class="cleancanvas-skeleton-text"></div><div class="cleancanvas-skeleton-text"></div></div>';
     for (let i = 0; i < options.num_todo_items; i++) {
         todoAssignments.innerHTML += loader;
@@ -759,7 +670,6 @@ function createTodoSections(location) {
 
 function createTodoViewMore(location, type) {
     let viewMoreButton = makeElement("button", location, { "className": "cleancanvas-custom-btn cleancanvas-viewmore-btn", "textContent": "View More" });
-    //viewMoreButton.classList.add("cleancanvas-viewmore-btn");
     const showMoreCount = 3;
     viewMoreButton.addEventListener("click", function (e) {
         if (type === "announcement") {
@@ -776,7 +686,6 @@ function setupBetterTodo() {
     if (document.querySelector('#cleancanvas-todo-list')) return;
     let list = document.querySelector("#right-side");
     if (!list) return;
-    //if (!list || list.childElementCount === 0 || list.children[0].id === "cleancanvas-todo-list") return;
     try {
         /* save the feedback to append it later */
         const feedback = list.querySelector(".events_list.recent_feedback");
@@ -812,7 +721,6 @@ function loadBetterTodo() {
         const maxAnnouncementCount = parseInt(options.num_todo_items) + moreAnnouncementCount;
         const hr24 = options.todo_hr24;
         const now = new Date();
-        //const csrfToken = CSRFtoken();
         let todoAnnouncements = document.querySelector("#cleancanvas-announcement-list");
         let todoAssignments = document.querySelector("#cleancanvas-todo-list");
         let assignmentsToInsert = [];
@@ -820,7 +728,6 @@ function loadBetterTodo() {
 
         assignments.then(data => {
             chrome.storage.sync.get(options.custom_assignments_overflow, storage => {
-                //assignmentData = assignmentData === null ? data : assignmentData;
                 let items = combineAssignments(data);
                 items.forEach((item, index) => {
                     let date = new Date(item.plannable_date);
@@ -835,15 +742,12 @@ function loadBetterTodo() {
                         default: return;
                     }
 
-                    // if (item.plannable_type === "announcement") {
-                    //if (announcementsToInsert.length >= maxAnnouncementCount + 1) return;
                     if (item.plannable_type !== "announcement") {
                         // leaving one extra assignment in the array to indicate there are more and the "view more" button should be created
                         if (assignmentsToInsert.length >= maxAssignmentCount + 1) return;
                         if (filter === "todo" && options.hide_completed === true && item.submissions.submitted === true) return;
                         if (filter === "todo" && ((options.todo_overdues !== true && now >= date) || (options.todo_overdues === true && item.submissions.submitted === true))) return;
                         if (filter === "done" && now <= date && !(itemState?.["rem"] === true || item?.submissions?.submitted === true)) return;
-                        //if (item.plannable_type !== "assignment" && item.plannable_type !== "quiz" && item.plannable_type !== "discussion_topic") return;
                     }
                     if (filter === "todo" && ((itemState && itemState["rem"] === true) || (item.planner_override && item.planner_override.marked_complete === true))) return;
 
@@ -973,84 +877,8 @@ function loadBetterTodo() {
                                     });
                                 });
                             });
-                        } /*else {
-                            // set the item as complete through api
-                            fetch(domain + '/api/v1/planner/overrides' + (item.planner_override ? "/" + item.planner_override.id : ""),
-                                {
-                                    method: item.planner_override ? "PUT" : "POST",
-                                    headers: {
-                                        "content-type": "application/json",
-                                        'accept': 'application/json',
-                                        'X-CSRF-Token': csrfToken,
-                                    },
-                                    body: JSON.stringify({ id: item.planner_override ? item.planner_override.id : null, marked_complete: true, plannable_id: item.plannable_id, plannable_type: item.plannable_type })
-                                }).then(resp => {
-                                    if (resp.status === 200 || resp.status === 201) {
-                                        
-                                        let container = listItemContainer.parentElement;
-                                        container.removeChild(listItemContainer);
-                                        assignments.forEach(assignment => {
-                                            if (assignment.plannable_id === item.plannable_id) {
-                                                item.planner_override = { "marked_complete": true };
-                                            }
-                                        });
-                                        
-                                        loadBetterTodo();
-                                        loadCardAssignments();
-                                    }
-                                });
-                        }*/
-                    });
-                    /*
-                    // remove item button
-                    listItemContainer.querySelector(".cleancanvas-todo-complete-btn").addEventListener('click', function () {
-                        if (item.planner_override && item.planner_override.custom && item.planner_override.custom === true) {
-                            // set item as complete locally
-                            chrome.storage.sync.get("custom_assignments_overflow", overflow => {
-                                chrome.storage.sync.get(overflow["custom_assignments_overflow"], storage => {
-                                    overflow["custom_assignments_overflow"].forEach(overflow => {
-                                        for (let i = 0; i < storage[overflow].length; i++) {
-                                            if (storage[overflow][i].plannable_id === item.plannable_id) {
-                                                storage[overflow].splice(i, 1);
-                                                chrome.storage.sync.set({ [overflow]: storage[overflow] }).then(() => {
-                                                    let container = listItemContainer.parentElement;
-                                                    container.removeChild(listItemContainer);
-                                                    loadBetterTodo();
-                                                    loadCardAssignments();
-                                                });
-                                                break;
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                        } else {
-                            // set the item as complete through api
-                            fetch(domain + '/api/v1/planner/overrides' + (item.planner_override ? "/" + item.planner_override.id : ""),
-                                {
-                                    method: item.planner_override ? "PUT" : "POST",
-                                    headers: {
-                                        "content-type": "application/json",
-                                        'accept': 'application/json',
-                                        'X-CSRF-Token': csrfToken,
-                                    },
-                                    body: JSON.stringify({ id: item.planner_override ? item.planner_override.id : null, marked_complete: true, plannable_id: item.plannable_id, plannable_type: item.plannable_type })
-                                }).then(resp => {
-                                    if (resp.status === 200 || resp.status === 201) {
-                                        let container = listItemContainer.parentElement;
-                                        container.removeChild(listItemContainer);
-                                        assignmentData.forEach(assignment => {
-                                            if (assignment.plannable_id === item.plannable_id) {
-                                                item.planner_override = { "marked_complete": true };
-                                            }
-                                        });
-                                        loadBetterTodo();
-                                        loadCardAssignments();
-                                    }
-                                });
                         }
                     });
-*/
 
                     if (item.plannable_type === "announcement") {
                         announcementsToInsert.push(listItemContainer);
@@ -1060,10 +888,6 @@ function loadBetterTodo() {
                             listItemContainer.classList.add("cleancanvas-todo-item-completed");
                         }
                     }
-                    //}
-                    //}
-
-
                 });
 
                 // appending assignments all at once
@@ -1110,7 +934,6 @@ async function changeColorPreset(colors) {
     if (colors.length === 0) return;
 
     // reset everything
-    //let res = await getData(`${domain}/api/v1/users/self/colors`);
     clearInterval(changeColorInterval);
     const csrfToken = CSRFtoken();
     const delay = 250;
@@ -1131,11 +954,8 @@ async function changeColorPreset(colors) {
             let previousColor = rgbToHex(card.el.querySelector(".ic-DashboardCard__header_hero").style.backgroundColor);
             previous.push(previousColor);
 
-            // Object.keys(res.custom_colors).forEach(item => {
-            //let item_id = item.split("_")[1];
             let course_id = card.href.split("courses/")[1];
 
-            //if (card.href.includes(item_id)) {
             let cnum = i % colors.length;
 
             let changeCardColor = () => {
@@ -1160,8 +980,6 @@ async function changeColorPreset(colors) {
             card.el.querySelector(".ic-DashboardCard__header_hero").style.backgroundColor = colors[cnum];
             card.el.querySelector(".ic-DashboardCard__header-title span").style.color = colors[cnum];
             card.el.querySelector(".ic-DashboardCard__header-button-bg").style.backgroundColor = colors[cnum];
-            //}
-            // });
         });
     } catch (e) {
         logError(e);
@@ -1218,13 +1036,7 @@ function toggleDarkMode() {
         style.textContent = options.dark_mode === true || options.device_dark ? css : "";
         style.className = options.dark_mode === true || options.device_dark ? "cleancanvas-darkmode-enabled" : "";
     }
-    /*
-    if (options.dark_mode === true || options.device_dark) {
-        document.body.classList.add("cleancanvas--darkmode--enabled");
-    } else {
-        document.body.classList.remove("cleancanvas--darkmode--enabled");
-    }
-    */
+    
     runiframeChecker();
 }
 
@@ -1314,7 +1126,6 @@ function insertGrades() {
                     data.forEach(grade => {
                         if (course_id === grade.id) {
                             let gradepercent = grade.enrollments[0].has_grading_periods === true ? grade.enrollments[0].current_period_computed_current_score : grade.enrollments[0].computed_current_score;
-                            //let gradepercent = grade.enrollments[0].computed_current_score;
                             let percent = (gradepercent || "--") + "%";
                             let gradeContainer = cards[i].querySelector(".cleancanvas-card-grade") || makeElement("a", cards[i].querySelector(".ic-DashboardCard__header"), { "className": "cleancanvas-card-grade", "textContent": percent });
                             if (options.grade_hover === true) {
@@ -1338,23 +1149,6 @@ function insertGrades() {
         });
     }
 }
-
-/*
-Card assignments
-*/
-
-/*
-function setAssignmentStatus(id, status, assignments_done = []) {
-    if (assignments_done.length > 50) assignments_done = [];
-    if (status === true) {
-        assignments_done.push(id);
-    } else {
-        const pos = assignments_done.indexOf(id);
-        if (pos > -1) assignments_done.splice(pos, 1);
-    }
-    chrome.storage.sync.set({ assignments_done: assignments_done });
-}
-*/
 
 function createCardAssignment(assignment) {
     let assignmentContainer = document.createElement("div");
@@ -1435,7 +1229,6 @@ function loadCardAssignments() {
                         if ((options.card_overdues !== true && now >= assignment.due) || (options.card_overdues === true && assignment.submitted === true)) return;
                         if (assignment.type !== "assignment" && assignment.type !== "quiz" && assignment.type !== "discussion_topic") return;
                         if (assignment.override === true) return;
-                        //assignment.el.querySelector(".cleancanvas-assignment-dueat").textContent = formatCardDue(assignment.due);
                         cardContainer.appendChild(assignment.el);
                         count++;
                     });
@@ -1451,60 +1244,6 @@ function loadCardAssignments() {
         }
     });
 }
-
-/*
-function loadCardAssignments2(c = null) {
-    if (options.assignments_due === true) {
-        try {
-            assignments.then(data => {
-                //assignmentData = assignmentData === null ? data : assignmentData; ????
-                let items = combineAssignments(data);
-                let cards = c ? c : document.querySelectorAll('.ic-DashboardCard');
-                const now = new Date();
-
-                cards.forEach(card => {
-                    let count = 0;
-                    let course_id = parseInt(card.querySelector(".ic-DashboardCard__link").href.split("courses/")[1]);
-                    let cardContainer = card.querySelector('.cleancanvas-card-container');
-                    cardContainer.textContent = "";
-                    cardContainer.parentElement.style.display = "block";
-
-                    items.forEach(assignment => {
-                        let due = new Date(assignment.plannable_date);
-                        // lots of checks to make
-                        // 1. item belongs to card
-                        // 2. haven't exceeded item limit
-                        // 3. assignment hasn't been submitted (if hide completed option is on)
-                        // 4. disallow overdue and item not past due/allow overdue and item hasn't been submitted
-                        // 5. correct item type
-                        // 6. no planner override marking item complete
-                        if (course_id !== assignment.course_id) return;
-                        if (count >= options.num_assignments) return;
-                        if (options.hide_completed === true && assignment.submissions.submitted === true) return;
-                        if ((options.card_overdues !== true && now >= due) || (options.card_overdues === true && assignment.submissions.submitted === true)) return;
-                        if ((assignment.plannable_type !== "assignment" && assignment.plannable_type !== "quiz" && assignment.plannable_type !== "discussion_topic")) return;
-                        if (assignment.planner_override && assignment.planner_override.marked_complete === true) return;
-
-                        createCardAssignment(cardContainer, assignment, now >= due);
-                        count++;
-                    });
-
-                    if (count === 0) {
-                        let assignmentContainer = makeElement("div", "cleancanvas-assignment-container", cardContainer);
-                        let assignmentDivLink = makeElement("a", "cleancanvas-assignment-link", assignmentContainer, "None");
-                    }
-                });
-            });
-        } catch (e) {
-            logError(e);
-        }
-    } else {
-        document.querySelectorAll(".cleancanvas-card-assignment").forEach(card => {
-            card.style.display = "none";
-        });
-    }
-}
-*/
 
 function setupCardAssignments() {
     if (options.assignments_due !== true) return;
@@ -1685,30 +1424,19 @@ function calculateGPA2() {
             letter = "F";
             gpa = options.gpa_calc_bounds["F"].gpa;
         }
-        /*
-        if (course.id === "cumulative-gpa") {
-            //gpa = parseFloat(options["cumulative_gpa"]["gr"]);
-            gpa = 0;
-            cumulativePoints += parseFloat(options["cumulative_gpa"]["gr"]) * credits;
-            cumulativeCredits = credits;
-        } else {
-            */
-            course.querySelector(".cleancanvas-gpa-letter-grade").textContent = letter;
 
-            let weightMultiplier = 0;
-            if (weight === "ap") {
-                weightMultiplier = 1;
-            } else if (weight === "honors") {
-                weightMultiplier = .5;
-            }
+        course.querySelector(".cleancanvas-gpa-letter-grade").textContent = letter;
+
+        let weightMultiplier = 0;
+        if (weight === "ap") {
+            weightMultiplier = 1;
+        } else if (weight === "honors") {
+            weightMultiplier = .5;
+        }
             
-            qualityPoints += gpa * credits;
-            weightedQualityPoints += (gpa + weightMultiplier) * credits;
-            numCredits += credits;
-        //}
-
-
-
+        qualityPoints += gpa * credits;
+        weightedQualityPoints += (gpa + weightMultiplier) * credits;
+        numCredits += credits;
     });
     document.querySelector("#cleancanvas-gpa-unweighted").textContent = (qualityPoints / numCredits).toFixed(2);
     document.querySelector("#cleancanvas-gpa-weighted").textContent = (weightedQualityPoints / numCredits).toFixed(2);
@@ -1935,17 +1663,6 @@ function applyAestheticChanges() {
     document.documentElement.appendChild(style);
 }
 
-/*
-function changeFullWidth() {
-    if (options.full_width == null) return;
-    if (options.full_width === true) {
-        document.body.classList.add("full-width");
-    } else {
-        document.body.classList.remove("full-width");
-    }
-}
-*/
-
 function changeGradientCards() {
     if (options.gradient_cards === true) {
         let cardheads = document.querySelectorAll('.ic-DashboardCard__header_hero');
@@ -1967,35 +1684,6 @@ function changeGradientCards() {
         let cardcss = document.querySelector("#gradientcss");
         if (cardcss) cardcss.textContent = "";
     }
-}
-
-function showUpdateMsg() {
-    // dont run if not on dashboard
-    const el = document.getElementById("announcementWrapper");
-    if (!el) return;
-
-    // option off or div already created
-    let div = document.getElementById("cleancanvas-update-msg");
-    if (options.show_updates !== true || options.update_msg === "") {
-        if (div) div.style.display = "none";
-        return;
-    } else if (div) {
-        div.style.display = "flex";
-        return;
-    }
-
-    // first creation 
-    div = makeElement("div", el, { "id": "cleancanvas-update-msg" });
-    makeElement("p", div, { "textContent": options.update_msg });
-    const close = makeElement("button", div, { "id": "cleancanvas-update-close", "textContent": "Close" });
-    close.addEventListener("click", () => {
-        readUpdate();
-        div.remove();
-    });
-}
-
-function readUpdate() {
-    chrome.storage.sync.set({ "update_msg": "" });
 }
 
 /*
@@ -2036,7 +1724,6 @@ function cleanCustomAssignments() {
 }
 
 function setupCustomURL() {
-    //let test = getData(`${domain}/api/v1/dashboard/dashboard_cards?include[]=concluded&include[]=term`);
     let test = getData(`${domain}/api/v1/courses?${/*enrollment_state=active&*/""}per_page=100`);
     test.then(res => {
         if (res.length) {
@@ -2085,7 +1772,6 @@ function changeFavicon() {
 function getAssignments() {
     if (options.assignments_due === true || options.better_todo === true) {
         let weekAgo = new Date(new Date() - 604800000);
-        //let weekAgo = new Date(new Date() - (604800000 * 10));
         assignments = getData(`${domain}/api/v1/planner/items?start_date=${weekAgo.toISOString()}&per_page=75`);
         cardAssignments = preloadAssignmentEls();
     }

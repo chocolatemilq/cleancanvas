@@ -112,7 +112,6 @@ function displayDarkModeFixUrls() {
     output.textContent = "";
     chrome.storage.sync.get("dark_mode_fix", sync => {
         sync["dark_mode_fix"].forEach(url => {
-            //let div = makeElement("div", "customization-button", output, url);
             let div = makeElement("div", output, { "className": "customization-button", "textContent": url });
             div.classList.add("fixed-url");
             let btn = makeElement("button", div, { "className": "dd", "textContent": "x" });
@@ -236,12 +235,7 @@ function setup() {
             });
             document.querySelector("#" + option).checked = sync[option];
         });
-        /*
-        document.querySelector('#autodark_start').value = result.auto_dark_start["hour"] + ":" + result.auto_dark_start["minute"];
-        document.querySelector('#autodark_end').value = result.auto_dark_end["hour"] + ":" + result.auto_dark_end["minute"];
-        document.querySelector("#assignment_date_format").checked = result.assignment_date_format == true;
-        document.querySelector("#todo_hr24").checked = result.todo_hr24 == true;
-        */
+        
         toggleDarkModeDisable(sync.auto_dark);
     });
 
@@ -252,16 +246,6 @@ function setup() {
             if (option.setup !== null) option.setup(sync[option.identifier]);
         });
     })
-
-    /*
-    // checkboxes
-    menu.checkboxes.forEach(checkbox => {
-        document.querySelector("#" + checkbox).addEventListener('change', function () {
-            let status = this.checked;
-            chrome.storage.sync.set(JSON.parse(`{"${checkbox}": ${status}}`));
-        });
-    });
-    */
 
     // activate tab buttons
     document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -331,7 +315,6 @@ function setup() {
         domains.forEach((domain, index) => {
             let val = domain.replace(" ", "");
             if (val === "") return;
-            //if (!val.includes("https://") && !val.includes("http://")) val = "https://" + val;
             try {
                 let url = new URL(val);
                 domains[index] = url.hostname;
@@ -359,7 +342,6 @@ function setup() {
     document.querySelectorAll(".export-details input").forEach(input => {
         input.addEventListener("change", () => {
             chrome.storage.sync.get(syncedSwitches.concat(syncedSubOptions).concat(["dark_preset", "custom_cards", "custom_font", "gpa_calc_bounds"]), async storage => {
-                //chrome.storage.local.get(["dark_preset"], async local => {
                 let final = {};
                 for await (item of document.querySelectorAll(".export-details input")) {
                     if (item.checked) {
@@ -386,7 +368,6 @@ function setup() {
                     }
                 }
                 document.querySelector("#export-output").value = JSON.stringify(final);
-                //});
             });
         });
     });
@@ -452,15 +433,6 @@ function setup() {
             sendFromPopup("setcolors", colors);
         })
     });
-
-    /*
-    ['autodark_start', 'autodark_end'].forEach(function (timeset) {
-        document.querySelector('#' + timeset).addEventListener('change', function () {
-            let timeinput = { "hour": this.value.split(':')[0], "minute": this.value.split(':')[1] };
-            timeset === "autodark_start" ? chrome.storage.sync.set({ auto_dark_start: timeinput }) : chrome.storage.sync.set({ auto_dark_end: timeinput });
-        });
-    });
-    */
 
     // activate sidebar tool radio
     ["#radio-sidebar-image", "#radio-sidebar-gradient", "#radio-sidebar-solid"].forEach(radio => {
@@ -586,8 +558,6 @@ async function displayMySubmissions() {
     const res = await fetch(`${apiurl}/api/themes/submissions?id=${sync["id"]}`);
     const data = await res.json();
 
-    //if (data?.errors !== false) return;
-
     document.getElementById("submit-form").style.display = "none";
     document.getElementById("view-submissions").style.display = "block";
     document.getElementById("submit-form-btn").classList.remove("active");
@@ -679,7 +649,6 @@ function themeSortFn(method) {
             return themes;
         case "Color":
             return themes.sort((a, b) => {
-                //return (colorValues[a.color] || 88) - (colorValues[b.color] || 88)
                 return (colorValues[a.color] || (a.color !== "whiteblack" && a.color.includes("white") ? 15 : 16)) - (colorValues[b.color] || (b.color !== "whiteblack" && b.color.includes("white") ? 15 : 16))
             })
             return themes.sort((a, b) => {
@@ -717,28 +686,6 @@ function clickout() {
     }, 10);
 }
 
-/*
-function sortThemes(method) {
-    const sortMethods = ["Popular", "ABC", "New", "Old"];
-    const index = sortMethods.indexOf(method);
-    const next = index + 1 === sortMethods.length ? 0 : index + 1;
-    current_sort = sortMethods[next];
-    allThemes = themeSortFn(current_sort);
-    document.querySelectorAll(".theme-sort-btn").forEach(btn => {
-        if (btn.id.includes(method)) {
-            btn.style.color = "#fff";
-            btn.style.background = "var(--inputbg)"
-        } else {
-            btn.style.color = "#adadad";
-            btn.style.background = "none"
-        }
-    });
-    current_page_num = 1;
-    displayThemeList(0);
-    //cache = {};
-}
-    */
-
 // shuffle function for the score sorting so theres no order bias
 function shuffle (arr) {
     var j, x, index;
@@ -756,8 +703,6 @@ let maxPage = 0;
 let searchFor = "";
 let current_sort = "Popular";
 let allThemes = themeSortFn(current_sort);
-
-//sortThemes(current_sort);
 
 function shortScore(score) {
     if (score >= 1400) {
@@ -1071,7 +1016,6 @@ async function displayThemeListNew(direction) {
 }
 
 function displayThemeListOld(pageDir = 0) {
-    //const keys = Object.keys(themes);
     document.getElementById("theme-current-sort").textContent = current_sort;
     const perPage = 24;
     const maxPage = Math.ceil(allThemes.length / perPage);
@@ -1354,11 +1298,9 @@ function displayAdvancedCards() {
                                 let newLinks = storage.custom_cards_2[key].links;
                                 if (e.target.value === "" || e.target.value === "default") {
                                     console.log("this value is empty....")
-                                    //newLinks[i] = { "type": storage.custom_cards_2[key].links.default[i].type, "default": true };
                                     newLinks[i] = { "default": newLinks[i].default, "is_default": true, "path": newLinks[i].default };
                                     customLink.value = "default";
                                 } else {
-                                    //newLinks[i] = { "type": getLinkType(e.target.value), "path": e.target.value, "default": false };
                                     let val = e.target.value;
                                     if (!e.target.value.includes("https://") && e.target.value !== "none") val = "https://" + val;
                                     newLinks[i] = { "default": newLinks[i].default, "is_default": false, "path": val };
@@ -1375,60 +1317,6 @@ function displayAdvancedCards() {
         }
     });
 }
-
-/*
-chrome.runtime.onMessage.addListener(message => {
-    if (message === "getCardsComplete") {
-        displayAdvancedCards();
-    }
-});
-*/
-
-/*
-syncedSwitches.forEach(function (option) {
-    let optionSwitch = document.querySelector('#' + option);
-    chrome.storage.sync.get(option, function (result) {
-        let status = result[option] === true ? "#on" : "#off";
-        optionSwitch.querySelector(status).checked = true;
-        optionSwitch.querySelector(status).classList.add('checked');
-    });
-
-    optionSwitch.querySelector(".slider").addEventListener('mouseup', function () {
-        optionSwitch.querySelector("#on").checked = !optionSwitch.querySelector("#on").checked;
-        optionSwitch.querySelector("#on").classList.toggle('checked');
-        optionSwitch.querySelector("#off").classList.toggle('checked');
-        let status = optionSwitch.querySelector("#on").checked;
-        chrome.storage.sync.set({ [option]: status });
-        if (option === "auto_dark") {
-            toggleDarkModeDisable(status);
-        }
-    });
-});
-*/
-
-/*
-localSwitches.forEach(option => {
-    let optionSwitch = document.querySelector('#' + option);
-    chrome.storage.local.get(option, function (result) {
-        let status = result[option] === true ? "#on" : "#off";
-        optionSwitch.querySelector(status).checked = true;
-        optionSwitch.querySelector(status).classList.add('checked');
-    });
-    optionSwitch.querySelector(".slider").addEventListener('mouseup', function () {
-        optionSwitch.querySelector("#on").checked = !optionSwitch.querySelector("#on").checked;
-        optionSwitch.querySelector("#on").classList.toggle('checked');
-        optionSwitch.querySelector("#off").classList.toggle('checked');
-        let status = optionSwitch.querySelector("#on").checked;
-        chrome.storage.local.set({ [option]: status });
-
-        /*
-        switch (option) {
-            case 'dark_mode': chrome.storage.local.set({ dark_mode: status }); sendFromPopup("darkmode"); break;
-        }
-        /
-    });
-});
-*/
 
 function toggleDarkModeDisable(disabled) {
     let darkSwitch = document.querySelector('#dark_mode');
@@ -1486,54 +1374,6 @@ function getColorInGradient(d, from, to) {
     let rgb = a1.map((x, i) => Math.floor(a1[i] + d * (a2[i] - a1[i])));
     return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
 }
-
-/*
-function getColors(preset) {
-    console.log(preset)
-    Object.keys(preset).forEach(key => {
-        try {
-            let c = document.querySelector("#dp_" + key);
-            let color = c.querySelector('input[type="color"]');
-            let text = c.querySelector('input[type="text"]');
-            [color, text].forEach(changer => {
-                changer.value = preset[key];
-                changer.addEventListener("change", function (e) {
-                    changeCSS(key, e.target.value);
-                });
-            });
-        } catch (e) {
-            console.log("couldn't get " + key)
-            console.log(e);
-        }
-    });
-}
-*/
-
-/*
-function getColors2(data) {
-    const colors = data.split(":root")[1].split("--bcstop")[0];
-    const backgroundcolors = document.querySelector("#option-background");
-    const textcolors = document.querySelector("#option-text");
-    colors.split(";").forEach(function (color) {
-        const type = color.split(":")[0].replace("{", "").replace("}", "");
-        const currentColor = color.split(":")[1];
-        if (type) {
-            let container = makeElement("div", "changer-container", type.includes("background") ? backgroundcolors : textcolors);
-            let colorChange = makeElement("input", "card-input", container);
-            let colorChangeText = makeElement("input", "card-input", container);
-            colorChangeText.type = "text";
-            colorChangeText.value = currentColor;
-            colorChange.type = "color";
-            colorChange.value = currentColor;
-            [colorChange, colorChangeText].forEach(changer => {
-                changer.addEventListener("change", function (e) {
-                    changeCSS(type, e.target.value);
-                });
-            });
-        }
-    })
-}
-*/
 
 function displaySidebarMode(mode, style) {
     style = style.replace(" ", "");
@@ -1655,24 +1495,6 @@ function changeToPresetCSS(e, preset = null) {
 function applyPreset(preset) {
     chrome.storage.sync.set({ "dark_preset": preset }).then(() => refreshColors());
 }
-
-/*
-function setToDefaults() {
-    fetch(chrome.runtime.getURL('js/darkcss.json'))
-        .then((resp) => resp.json())
-        .then(function (result) {
-            chrome.storage.local.set({ "dark_css": result["dark_css"], "dark_preset": { "background-0": "#161616", "background-1": "#1e1e1e", "background-2": "#262626", "borders": "#3c3c3c", "text-0": "#f5f5f5", "text-1": "#e2e2e2", "text-2": "#ababab", "links": "#56Caf0", "sidebar": "#1e1e1e", "sidebar-text": "#f5f5f5" } }).then(() => refreshColors());
-        });
-}
-*/
-/*
-function makeElement(element, elclass, location, text) {
-    let creation = document.createElement(element);
-    creation.className = elclass;
-    creation.textContent = text;
-    location.appendChild(creation);
-    return creation
-}*/
 
 function makeElement(element, location, options) {
     let creation = document.createElement(element);
