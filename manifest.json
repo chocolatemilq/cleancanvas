@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Better Canvas",
+  "name": "Clean Canvas",
   "description": "Feature packed extension for Canvas.",
   "version": "5.12.6",
   "icons": {
@@ -15,7 +15,7 @@
       "38": "icon/icon-38.png"
     },
     "default_popup": "html/popup.html",
-    "default_title": "Better Canvas"
+    "default_title": "Clean Canvas"
   },
   "background": {
     "service_worker": "js/background.js"
