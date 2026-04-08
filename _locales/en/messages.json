@@ -161,30 +161,6 @@
   "dark_mint": {
     "message": "Mint"
   },
-  "dark_blue": {
-    "message": "Blue Tint"
-  },
-  "dark_burn": {
-    "message": "Eyeball Burn"
-  },
-  "dark_unicorn": {
-    "message": "Unicorn"
-  },
-  "dark_lightmode": {
-    "message": "Lightmode"
-  },
-  "dark_catppuccin": {
-    "message": "Catppuccin\n By Angel"
-  },
-  "dark_sage": {
-    "message": "Sabia\n By LivDoesDevStuf"
-  },
-  "dark_pink": {
-    "message": "Pink\n By Sayde"
-  },
-  "dark_coral": {
-    "message": "Coral\n By Superchido"
-  },
   "dp_sidebar_text": {
     "message": "Sidebar Text"
   },
