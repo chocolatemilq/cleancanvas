@@ -2,9 +2,6 @@ const syncedSwitches = ['remind', 'tab_icons', 'hide_feedback', 'dark_mode', 're
 const syncedSubOptions = ['todo_colors', 'device_dark', 'relative_dues', 'card_overdues', 'todo_overdues', 'gpa_calc_prepend', 'auto_dark', 'auto_dark_start', 'auto_dark_end', 'num_assignments', 'assignment_date_format', 'todo_hr24', 'grade_hover', 'hide_completed', 'num_todo_items', 'hover_preview'];
 const localSwitches = [];
 
-//const apiurl = "http://localhost:3000";
-const apiurl = "https://cleancanvas.diditupe.dev";
-
 const defaultOptions = {
     "local": {
         "previous_colors": null,
@@ -920,6 +917,11 @@ function changeToPresetCSS(e, preset = null) {
         "dark-dark": { "background-0": "#101010", "background-1": "#121212", "background-2": "#1a1a1a", "borders": "#272727", "sidebar": "#121212", "text-0": "#f5f5f5", "text-1": "#e2e2e2", "text-2": "#ababab", "links": "#56Caf0", "sidebar-text": "#f5f5f5" },
         "dark-darker": { "background-0": "#000000", "background-1": "#000000", "background-2": "#000000", "borders": "#000000", "sidebar": "#000000", "text-0": "#c5c5c5", "text-1": "#c5c5c5", "text-2": "#c5c5c5", "links": "#c5c5c5", "sidebar-text": "#c5c5c5" },
         "dark-mint": { "background-0": "#0f0f0f", "background-1": "#0c0c0c", "background-2": "#141414", "borders": "#1e1e1e", "sidebar": "#0c0c0c", "text-0": "#f5f5f5", "text-1": "#e2e2e2", "text-2": "#ababab", "links": "#7CF3CB", "sidebar-text": "#f5f5f5" },
+        "dark-dracula": { "background-0":"#1e1f29","background-1":"#282A36","background-2":"#282A36","borders":"#44475A","links":"#BD93F9","sidebar":"#282A36","sidebar-text":"#F8F8F2","text-0":"#F8F8F2","text-1":"#F8F8F2","text-2":"#aaabac" },
+        "dark-latte": { "background-0":"#eff1f5","background-1":"#ccd0da","background-2":"#bcc0cc","borders":"#acb0be","links":"#8839ef","sidebar":"#ccd0da","sidebar-text":"#5c5f77","text-0":"#4c4f69","text-1":"#5c5f77","text-2":"#6c6f85" },
+        "dark-frappe": { "background-0":"#303446","background-1":"#414559","background-2":"#51576d","borders":"#626880","links":"#ca9ee6","sidebar":"#414559","sidebar-text":"#c6d0f5","text-0":"#c6d0f5","text-1":"#b5bfe2","text-2":"#a5adce" },
+        "dark-macchiato": { "background-0":"#24273a","background-1":"#363a4f","background-2":"#494d64","borders":"#5b6078","links":"#c6a0f6","sidebar":"#363a4f","sidebar-text":"#cad3f5","text-0":"#cad3f5","text-1":"#b8c0e0","text-2":"#a5adcb" },
+        "dark-mocha": { "background-0":"#1e1e2e","background-1":"#313244","background-2":"#45475a","borders":"#585b70","links":"#cba6f7","sidebar":"#313244","sidebar-text":"#cdd6f4","text-0":"#cdd6f4","text-1":"#bac2de","text-2":"#a6adc8" },
     }
     if (preset === null) preset = presets[e.target.id] || presets["default"];
     applyPreset(preset);
