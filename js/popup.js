@@ -180,7 +180,7 @@ function setup() {
 
     const menu = {
         "switches": syncedSwitches,
-        "checkboxes": ['browser_show_likes', 'gpa_calc_weighted', 'gpa_calc_cumulative', /*'card_method_date',*/ 'todo_colors', 'device_dark', 'relative_dues', 'card_overdues', 'todo_overdues', 'gpa_calc_prepend', 'auto_dark', 'assignment_date_format', 'todo_hr24', 'grade_hover', 'hide_completed', 'hover_preview'],
+        "checkboxes": ['gpa_calc_weighted', 'gpa_calc_cumulative', 'todo_colors', 'device_dark', 'relative_dues', 'card_overdues', 'todo_overdues', 'gpa_calc_prepend', 'auto_dark', 'assignment_date_format', 'todo_hr24', 'grade_hover', 'hide_completed', 'hover_preview'],
         "tabs": {
             "advanced-settings": { "setup": displayAdvancedCards, "tab": ".advanced" },
             "gpa-bounds-btn": { "setup": displayGPABounds, "tab": ".gpa-bounds-container" },
